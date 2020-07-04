@@ -3,6 +3,7 @@ package com.ia.Dao;
 import java.util.List;
 
 import com.ia.modal.Category;
+import com.ia.modal.Store;
 import com.ia.modal.User;
 
 public interface HomeDao {
@@ -19,5 +20,11 @@ public interface HomeDao {
 	
 	List<User> getUserList();
 	
-	List<User> getStoreList();
+	List<Store> getStoreList();
+	
+	boolean deleteStore(int storeId);
+	
+	boolean insertStore(Store store);
+	
+	boolean updateStore(Store store,int storeId);
 }

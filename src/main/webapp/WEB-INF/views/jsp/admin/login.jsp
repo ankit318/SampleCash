@@ -34,7 +34,7 @@ overflow-y:hidden;
   
 	  <fieldset>	    
 	    <!-- Form Name -->     
-	    <h3 class="brand-home text-center mg0"><strong> Data Collection </strong></h3>
+	    <h3 class="brand-home text-center mg0"><strong> Admin Panel </strong></h3>
 	    <hr>
 	    
 	    <!-- Text input-->

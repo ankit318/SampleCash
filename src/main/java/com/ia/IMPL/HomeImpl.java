@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.ia.Dao.HomeDao;
 import com.ia.modal.Category;
+import com.ia.modal.Store;
 import com.ia.modal.User;
 
 @Component("homeDao")
@@ -184,21 +185,21 @@ public class HomeImpl implements HomeDao {
 	}
 
 	@Override
-	public List<User> getStoreList() {
-		List<User> users = new ArrayList<>();
+	public List<Store> getStoreList() {
+		List<Store> storeslist = new ArrayList<>();
 		try (Connection con = (Connection) dataSource.getConnection()) {
 			String sql = "select * from master_store order by store_name";
 			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				User user = new User();
-				user.setFname(rs.getString("fname"));
-				user.setLname(rs.getString("lname"));
-				user.setUserEmail(rs.getString("useremail"));
-				user.setPassword(rs.getString("password"));
-				user.setMobileNumber(rs.getString("mobile_number"));
-				user.setUserId(rs.getInt("user_id"));
-				users.add(user);
+				Store store = new Store();
+				store.setStoreName(rs.getString("store_name"));
+				store.setStoreSlug(rs.getString("store_slug"));
+				store.setStoreDomain(rs.getString("store_domain"));
+				store.setStorePartnerKey(rs.getString("store_partner_key"));
+				store.setStoreHeading(rs.getString("store_heading"));
+				store.setPriority(rs.getString("priority"));
+				storeslist.add(store);
 			}
 			con.close();
 		} catch (Exception e) {
@@ -207,7 +208,94 @@ public class HomeImpl implements HomeDao {
 
 			e.printStackTrace();
 		}
-		return users;
+		return storeslist;
+	}
+
+	@Override
+	public boolean deleteStore(int storeId) {
+		int status = 0;
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			String sql = "update master_store set status = 'Delete' where master_store_id = ?";
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.setInt(1, storeId);
+			status = ps.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		 
+		System.out.println("Status :::" + status);
+		if (status > 0)
+			return true;
+		else
+			return false;
+	}
+
+	@Override
+	public boolean insertStore(Store store) {
+		// TODO Auto-generated method stub
+		
+		int status = 0;
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			String sql = "insert into master_store(store_name,store_slug,store_domain,store_partner_key,store_description,store_heading,priority,notice,minium_transaction_amount,vary,store_primary_key_word,store_secondary_key_word) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.setString(1, store.getStoreName());
+			ps.setString(2, store.getStoreSlug());
+			ps.setString(3, store.getStoreDomain());
+			ps.setString(4, store.getStorePartnerKey());
+			ps.setString(5, store.getStoreDescription());
+			ps.setString(6, store.getStoreHeading());
+			ps.setString(7, store.getPriority());
+			ps.setString(8, store.getNotice());
+			ps.setDouble(9, store.getMiniumTransactionAmount());
+			ps.setString(10, store.getVary());
+			ps.setString(11, store.getStorePrimaryKeyWord());
+			ps.setString(12, store.getStoreSecondaryKeyWord());
+			status = ps.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		System.out.println("Status :::" + status);
+		if (status > 0)
+			return true;
+		else
+			return false;
+	}
+
+	@Override
+	public boolean updateStore(Store store, int storeId) {
+		int status = 0;
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			String sql = "update master_store set store_name = ?,store_slug = ?,store_domain = ?,store_partner_key = ?,store_description = ?,store_heading = ?,priority = ?,notice = ?,minium_transaction_amount = ?,vary = ?,store_primary_key_word = ?,store_secondary_key_word=? where master_store_id = ?";
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			ps.setString(1, store.getStoreName());
+			ps.setString(2, store.getStoreSlug());
+			ps.setString(3, store.getStoreDomain());
+			ps.setString(4, store.getStorePartnerKey());
+			ps.setString(5, store.getStoreDescription());
+			ps.setString(6, store.getStoreHeading());
+			ps.setString(7, store.getPriority());
+			ps.setString(8, store.getNotice());
+			ps.setDouble(9, store.getMiniumTransactionAmount());
+			ps.setString(10, store.getVary());
+			ps.setString(11, store.getStorePrimaryKeyWord());
+			ps.setString(12, store.getStoreSecondaryKeyWord());
+			ps.setInt(13, store.getMasterStoreId());
+			status = ps.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		;
+		System.out.println("Status :::" + status);
+		if (status > 0)
+			return true;
+		else
+			return false;
 	}
 
 	/*

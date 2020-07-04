@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ia.Dao.HomeDao;
+import com.ia.Dao.StoreDao;
 import com.ia.modal.Category;
+import com.ia.modal.Store;
 import com.ia.modal.User;
 import com.ia.util.CommonUtility;
 import com.ia.util.MailConfiguration;
@@ -33,6 +35,9 @@ public class HomeController {
 
 	@Autowired	 
 	HomeDao homeDao;
+	
+	@Autowired	 
+	StoreDao storeDao;
 	
 	
 	@RequestMapping(value="/")
@@ -293,12 +298,58 @@ public class HomeController {
 		}
 		
 	}
+	
+	@RequestMapping(value="offer")
+	public String offer(HttpServletRequest requestm,Model model,HttpSession session)
+	{
+		if(session.getAttribute("userId")!=null) {
+			return "admin/offer";	
+		}else {
+			return "redirect:login";	
+		}
+		
+	}
+	
 
 	@RequestMapping(value="storeList")
 	public String storeList(HttpServletRequest requestm,Model model,HttpSession session)
 	{
+		model.addAttribute("storeList", homeDao.getStoreList());
+		
 		if(session.getAttribute("userId")!=null) {
-			return "admin/store_list";	
+			return "admin/storelist";	
+		}else {
+			return "redirect:login";	
+		}
+		
+	}
+	
+	@RequestMapping(value = "/storeEntry", method = RequestMethod.POST)
+	public String store(HttpServletRequest request,Store store,HttpSession session,HttpServletResponse response)
+	{
+		System.out.println("store :::"+store.getStoreName());
+		int userId = Integer.parseInt(session.getAttribute("userId")+"");
+		store.setCreatedBy(userId);
+		storeDao.insert(store);
+		return "redirect:store";
+		
+	}
+	
+	@RequestMapping(value="storeAction")
+	public String storeAction(HttpServletRequest request,Store store ,Model model,HttpSession session)
+	{
+		String action = request.getParameter("action");
+		
+		if(action.equalsIgnoreCase("delete")) {
+			homeDao.deleteStore(Integer.parseInt(request.getParameter("storeId")));
+		}else if(action.equalsIgnoreCase("update")) {
+			homeDao.insertStore(store);
+		}else if(action.equalsIgnoreCase("insert")) {
+			homeDao.updateStore(store,Integer.parseInt(request.getParameter("storeId")));
+		}
+		
+		if(session.getAttribute("userId")!=null) {
+			return "admin/storelist";	
 		}else {
 			return "redirect:login";	
 		}

@@ -27,23 +27,34 @@
 <!--            <li class="header">MAIN NAVIGATION</li>-->
           
           
-           <li class="active treeview">
+          <li>
+                <a href="<%=request.getContextPath() %>/dashboard">
+                <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+              </a>
+            </li>
+           
+           <li class="treeview">
               <a href="#">
                 <i class="fa fa-dashboard"></i> <span>Manage Store</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu"> 
                 <li class="active"><a href="<%=request.getContextPath() %>/store"><i class="fa fa-circle-o"></i> Add Store</a></li>
-                <li><a href="index2.html"><i class="fa fa-circle-o"></i> Store List</a></li>
-              </ul>
+                <li><a href="<%=request.getContextPath() %>/storeList"><i class="fa fa-circle-o"></i> Store List</a></li>
+              </ul> 
+            </li>
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Manage Offer</span> <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">  
+                <li class="active"><a href="<%=request.getContextPath() %>/offer"><i class="fa fa-circle-o"></i> Add Offer</a></li>
+                <li><a href="<%=request.getContextPath() %>/storeList"><i class="fa fa-circle-o"></i> Offer List</a></li>
+              </ul> 
             </li>
            
          
          
-         <%--   <li>
-                <a href="<%=request.getContextPath() %>/store">
-                <i class="fa fa-dashboard"></i> <span>Store Manager</span>
-              </a>
-            </li> --%>
+           
 <!--             <li class="treeview">
               <a href="#">
                 <i class="fa fa-share"></i> <span>Multilevel</span>
