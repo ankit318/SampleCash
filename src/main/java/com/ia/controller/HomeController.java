@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ia.Dao.HomeDao;
-import com.ia.Dao.StoreDao;
-import com.ia.modal.Category;
 import com.ia.modal.Store;
 import com.ia.modal.User;
 import com.ia.util.CommonUtility;
@@ -35,10 +33,6 @@ public class HomeController {
 
 	@Autowired	 
 	HomeDao homeDao;
-	
-	@Autowired	 
-	StoreDao storeDao;
-	
 	
 	@RequestMapping(value="/")
 	public String home(Model model,HttpSession session) {
@@ -70,7 +64,7 @@ public class HomeController {
 		
 	}
 	
-	@RequestMapping(value="i")
+	/*@RequestMapping(value="i")
 	public String signup(HttpServletRequest request,HttpSession session)
 	{
 		
@@ -81,7 +75,7 @@ public class HomeController {
 		user.setUserEmail(request.getParameter("email"));
 		
 		return "redirect:/";
-	}
+	}*/
 	
 	@RequestMapping(value="signout")
 	public String signout(HttpSession session)
@@ -92,19 +86,15 @@ public class HomeController {
 				
 				
 	}
-	 
-
-	/* Start Admin controller */
-	@RequestMapping(value="login")
+	/*@RequestMapping(value="login")
 	public String login()
 	{
-		
-		
-
-		
 		System.out.println("This is callllllllllllllllllllllllllllllll");
 		return "admin/login";
-	}
+	}*/ 
+
+	/* Start Admin controller */
+	
 	
 	@RequestMapping(value="adminupload")
 	public String adminupload()
@@ -243,8 +233,6 @@ public class HomeController {
 	}
 	
 	
-   
-	
 	@RequestMapping(value="dashboard")
 	public String dashboard(HttpServletRequest requestm,Model model,HttpSession session)
 	{
@@ -255,83 +243,6 @@ public class HomeController {
 		}else {
 			return "redirect:login";	
 		}
-		
-	}
-	
-	  
-	
-	@RequestMapping(value="category")
-	public String category(Model model)
-	{
-		model.addAttribute("categoryList",homeDao.getCategory());
-		
-		System.out.println("This is category"+homeDao.getCategory().size());
-		return "admin/manageCategory";
-	}
-	
-	@RequestMapping(value="manageCategory")
-	public String manageCategory(Model model)
-	{
-			
-		System.out.println("This is dashboard"+homeDao.getCategory().size());
-		return "admin/category";
-	}
-	
-	@RequestMapping(value="categoryInsert")
-	public String categoryInsert(Category category) {
-		
-		
-		System.out.println("Categoty :::"+category.getCatName());
-		
-		homeDao.categoryInsert(category);
-		 
-		return "redirect:category";
-	}
-
-	@RequestMapping(value="store")
-	public String store(HttpServletRequest requestm,Model model,HttpSession session)
-	{
-		if(session.getAttribute("userId")!=null) {
-			return "admin/store";	
-		}else {
-			return "redirect:login";	
-		}
-		
-	}
-	
-	@RequestMapping(value="offer")
-	public String offer(HttpServletRequest requestm,Model model,HttpSession session)
-	{
-		if(session.getAttribute("userId")!=null) {
-			return "admin/offer";	
-		}else {
-			return "redirect:login";	
-		}
-		
-	}
-	
-
-	@RequestMapping(value="storeList")
-	public String storeList(HttpServletRequest requestm,Model model,HttpSession session)
-	{
-		model.addAttribute("storeList", homeDao.getStoreList());
-		
-		if(session.getAttribute("userId")!=null) {
-			return "admin/storelist";	
-		}else {
-			return "redirect:login";	
-		}
-		
-	}
-	
-	@RequestMapping(value = "/storeEntry", method = RequestMethod.POST)
-	public String store(HttpServletRequest request,Store store,HttpSession session,HttpServletResponse response)
-	{
-		System.out.println("store :::"+store.getStoreName());
-		int userId = Integer.parseInt(session.getAttribute("userId")+"");
-		store.setCreatedBy(userId);
-		storeDao.insert(store);
-		return "redirect:store";
 		
 	}
 	

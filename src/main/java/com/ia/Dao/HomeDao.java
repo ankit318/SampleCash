@@ -14,9 +14,7 @@ public interface HomeDao {
 	
 	boolean insert(User user);
 	
-	boolean categoryInsert(Category category);
 	
-	List<Category> getCategory();
 	
 	List<User> getUserList();
 	
