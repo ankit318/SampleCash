@@ -14,15 +14,5 @@ public interface HomeDao {
 	
 	boolean insert(User user);
 	
-	
-	
 	List<User> getUserList();
-	
-	List<Store> getStoreList();
-	
-	boolean deleteStore(int storeId);
-	
-	boolean insertStore(Store store);
-	
-	boolean updateStore(Store store,int storeId);
 }

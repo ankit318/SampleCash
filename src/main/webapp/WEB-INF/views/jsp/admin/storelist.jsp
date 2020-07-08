@@ -10,7 +10,99 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- All CSS-->
         <%@include file="include/css.jsp" %>
-        
+        <%@include file="include/allJS.jsp" %>
+
+ <script>
+ $( document ).ready(function() {
+	  storeList(); 
+	});
+
+  
+	function storeDelete(storeId){ 
+		if(confirm("Are you sure you want to delete store?")){
+			$.ajax({
+				type : "POST",
+				url : "<%=request.getContextPath()%>/storeDelete",
+				data : {
+					storeId : storeId
+				},
+				success :function(data){
+					if(data==true){
+						storeList();
+					}else{ 
+						alert("Store not deleted successfully.")
+					}  
+					
+				},error : function(e){
+					console.log("Error ::::"+e);
+				}
+			});
+		}
+	}
+	
+	function updateStoreStatus(storeId){  
+		var flag = "0";
+		if($("#"+storeId+"_status").is(':checked')){
+			flag = "0";
+		}else{
+			flag = "1";
+		}
+		  
+		if(confirm("Are you sure you want to update store status?")){
+			$.ajax({
+				type : "POST",
+				url : "<%=request.getContextPath()%>/updateStoreStatus",
+				data : {
+					storeId : storeId,
+					flag : flag
+				},
+				success :function(data){
+					if(data==true){
+						alert("Store updated successfully.")
+					}else{ 
+						alert("Store not updated successfully.")
+					}  
+					
+				},error : function(e){
+					console.log("Error ::::"+e);
+				}
+			});
+		}
+	}
+	
+	
+	function storeList(){
+		$.ajax({
+			type : "POST",
+			url : "<%=request.getContextPath()%>/storeList",
+			data : {
+			},
+			success :function(data){
+				$('#storeHeader').empty(); 
+				$('#storeData').empty(); 
+				for (var i = 0; i < data.length; i++) {
+					if(i==0){ 
+						$('#storeHeader').append('<tr role="row"><th width="3%" style="text-align: center;">Sr.No</th><th width="15%">Store name</th><th width="10%">Store Slug</th><th width="12%">Store Domain</th><th width="20%" >Heading</th><th width="10%" >Prioriy</th><th width="10%" >Minimun Amount</th>	<th width="10%"style="text-align: center; " >Status</th><th width="20%" style="text-align: right; vertical-align: top">Action</th></tr>');
+					} 
+					
+					var checkStatus = "";
+					 
+					if(data[i].isActive==0){
+						checkStatus = "checked";
+					}else 
+						checkStatus = "";
+					
+						$('#storeData').append('<tr><td style="text-align: center;">'+(i+1)+'</td><td>'+data[i].storeName+'</td><td>'+data[i].storeSlug+'</td><td>'+data[i].storeDomain+'</td><td>'+data[i].storeHeading+'</td><td>'+data[i].priority+'</td><td>'+data[i].miniumTransactionAmount+'</td><td style="text-align: center;"><input type="checkbox" name="'+data[i].masterStoreId+'_status" id="'+data[i].masterStoreId+'_status"  '+checkStatus+' onclick="updateStoreStatus('+data[i].masterStoreId+')" > </td>	<td style="text-align: right; vertical-align: top"><a href="#" class="btn btn-danger btn-sm" onclick="storeDelete('+data[i].masterStoreId+')">Delete</a></td></tr>');	
+				}
+			},error : function(e){
+				console.log("Error ::::"+e);
+			}
+			
+			
+		});
+ 	
+	}
+</script>
 
     </head>
     <body class="hold-transition skin-yellow sidebar-mini">
@@ -45,37 +137,11 @@
                         <!-- form start -->
                         <div class="box-body">
 							<table class="table table-hover">
-								<thead>
-									<tr role="row">
-										<th width="3%" style="text-align: center;">Sr.No</th>
-										<th width="15%">Store name</th>
-										<th width="10%">Store Slug</th>
-										<th width="12%">Store Domain</th>
-										<th width="20%" >Heading</th>
-										<th width="10%" >Prioriy</th>
-										<th width="10%" >Minimun Amount</th>
-										<th width="10%"style="text-align: center; " >Status</th>
-										<th width="20%" style="text-align: right; vertical-align: top">Action</th>
-		
-									</tr>
+								<thead id="storeHeader">
+									
 								</thead>
-								<tbody>
-								<c:forEach var="storeList" varStatus="count" items="${storeList }">
-									<tr>
-										<td style="text-align: center;">${count.index + 1 }</td>
-										<td>${storeList.storeName }</td>
-										<td>${storeList.storeSlug }</td>
-										<td>${storeList.storeDomain }</td>
-										<td>${storeList.storeHeading }</td>
-										<td>${storeList.priority }</td>
-										<td>${storeList.miniumTransactionAmount }</td>
-										<td style="text-align: center; "><input type="checkbox" > </td>
-										<td style="text-align: right; vertical-align: top"><a href="#" class="btn btn-danger btn-sm" onclick="Delete(${storeList.masterStoreId })">Delete</button></td>
-										
-									</tr>
-								</c:forEach>
-																
-								</tbody>
+									<tbody ></tbody>
+									<tbody id="storeData"></tbody>
 							</table>
                         </div>
                        
@@ -92,11 +158,7 @@
 
         <!-- All JS-->
         
-       <%@include file="include/allJS.jsp" %>
-       <script>
-       fucntion Delete (){
-    	  
-       }
-       </script>
+      
+      
     </body>
 </html>

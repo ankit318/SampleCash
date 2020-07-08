@@ -64,43 +64,6 @@ public class HomeController {
 		
 	}
 	
-	/*@RequestMapping(value="i")
-	public String signup(HttpServletRequest request,HttpSession session)
-	{
-		
-		User user = new User();
-		user.setFname(request.getParameter("fname"));
-		user.setLname(request.getParameter("lname"));
-		user.setPassword(request.getParameter("pass"));
-		user.setUserEmail(request.getParameter("email"));
-		
-		return "redirect:/";
-	}*/
-	
-	@RequestMapping(value="signout")
-	public String signout(HttpSession session)
-	{
-		
-		session.setAttribute("username", null);
-		return "redirect:/";
-				
-				
-	}
-	/*@RequestMapping(value="login")
-	public String login()
-	{
-		System.out.println("This is callllllllllllllllllllllllllllllll");
-		return "admin/login";
-	}*/ 
-
-	/* Start Admin controller */
-	
-	
-	@RequestMapping(value="adminupload")
-	public String adminupload()
-	{
-		return "admin/adminupload";
-	}
 	
 	@RequestMapping(value="uploadFile" , method=RequestMethod.POST)
 	public String uploadFile(@RequestParam("tableName") String tableName,@RequestParam("file") MultipartFile file,HttpServletRequest request)
@@ -186,16 +149,7 @@ public class HomeController {
 			 session.setAttribute("userName", request.getParameter("Email"));
 			 session.setAttribute("userId", user.getUserId());
 			 session.setAttribute("userRole", user.getUserRole());
-			 session.setAttribute("approvedLink", user.getApprovedLink());
-			 session.setAttribute("approvedLink2", user.getApprovedLink2());
-			 /*session.setAttribute("approvedLink3", user.getApprovedLink3());*/
-			 session.setAttribute("companyLink", user.getCompanyLink()); 
-			 System.out.println("Login user Id::"+ user.getUserId());
-			 
-			 Cookie ck=new Cookie("userId",user.getUserId()+"");//creating cookie object  
-			 response.addCookie(ck);//adding cookie in the response  
 
-			 
 			 String userRole = user.getUserRole();
 			 System.out.println(user +"--------------");
 			 if(userRole.equalsIgnoreCase("1")) {
@@ -224,13 +178,13 @@ public class HomeController {
 		return "admin/login";
 	}
 	
-	@RequestMapping(value="manageUser")
+	/*@RequestMapping(value="manageUser")
 	public String user(Model model)
 	{
 		model.addAttribute("userList",homeDao.getUserList());
 		
 		return "admin/manageUser";
-	}
+	}*/
 	
 	
 	@RequestMapping(value="dashboard")
@@ -239,14 +193,14 @@ public class HomeController {
 		if(session.getAttribute("userId")!=null) {
 			int userId = Integer.parseInt(session.getAttribute("userId")+"");
 			System.out.println("This is dashboard  s1 --"+userId);
-			return "admin/dashboard1";	
+			return "admin/dashboard";	
 		}else {
 			return "redirect:login";	
 		}
 		
 	}
 	
-	@RequestMapping(value="storeAction")
+	/*@RequestMapping(value="storeAction")
 	public String storeAction(HttpServletRequest request,Store store ,Model model,HttpSession session)
 	{
 		String action = request.getParameter("action");
@@ -265,7 +219,7 @@ public class HomeController {
 			return "redirect:login";	
 		}
 		
-	}
+	}*/
 	
 	 
 	/* End Admin controller */

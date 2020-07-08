@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -13,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.ia.Dao.HomeDao;
-import com.ia.modal.Category;
-import com.ia.modal.Store;
 import com.ia.modal.User;
+import com.ia.util.CommonUtility;
 
 @Component("homeDao")
 public class HomeImpl implements HomeDao {
 
+	Properties homeProp = CommonUtility.readPropertiesFile(this.getClass().getResourceAsStream("./home.properties"));
+	
 	@Autowired
 	DataSource dataSource;
 
@@ -30,8 +32,7 @@ public class HomeImpl implements HomeDao {
 		// TODO Auto-generated method stub
 		List<String> data = new ArrayList<>();
 		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "select * from login";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(homeProp.getProperty("getData"));
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				System.out.println(rs.getString("username"));
@@ -53,8 +54,7 @@ public class HomeImpl implements HomeDao {
 		// TODO Auto-generated method stub
 		User user = new User();
 		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "select * from user where useremail = ? and binary password = ?";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(homeProp.getProperty("checkValidUser"));
 			ps.setString(1, userName);
 			ps.setString(2, password);
 			ResultSet rs = ps.executeQuery();
@@ -81,8 +81,7 @@ public class HomeImpl implements HomeDao {
 		// TODO Auto-generated method stub
 		int status = 0;
 		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "insert into user(fname,lname,useremail,password) value(?,?,?,?)";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(homeProp.getProperty("insertUser"));
 			ps.setString(1, user.getFname());
 			ps.setString(2, user.getLname());
 			ps.setString(3, user.getUserEmail());
@@ -110,8 +109,7 @@ public class HomeImpl implements HomeDao {
 		// TODO Auto-generated method stub
 		List<User> users = new ArrayList<>();
 		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "select * from user";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(homeProp.getProperty("getUserList"));
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				User user = new User();
@@ -133,119 +131,9 @@ public class HomeImpl implements HomeDao {
 		return users;
 	}
 
-	@Override
-	public List<Store> getStoreList() {
-		List<Store> storeslist = new ArrayList<>();
-		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "select * from master_store order by store_name";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				Store store = new Store();
-				store.setStoreName(rs.getString("store_name"));
-				store.setStoreSlug(rs.getString("store_slug"));
-				store.setStoreDomain(rs.getString("store_domain"));
-				store.setStorePartnerKey(rs.getString("store_partner_key"));
-				store.setStoreHeading(rs.getString("store_heading"));
-				store.setPriority(rs.getString("priority"));
-				storeslist.add(store);
-			}
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println("Error ::::");
+	
 
-			e.printStackTrace();
-		}
-		return storeslist;
-	}
-
-	@Override
-	public boolean deleteStore(int storeId) {
-		int status = 0;
-		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "update master_store set status = 'Delete' where master_store_id = ?";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
-			ps.setInt(1, storeId);
-			status = ps.executeUpdate();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		 
-		System.out.println("Status :::" + status);
-		if (status > 0)
-			return true;
-		else
-			return false;
-	}
-
-	@Override
-	public boolean insertStore(Store store) {
-		// TODO Auto-generated method stub
-		
-		int status = 0;
-		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "insert into master_store(store_name,store_slug,store_domain,store_partner_key,store_description,store_heading,priority,notice,minium_transaction_amount,vary,store_primary_key_word,store_secondary_key_word) values(?,?,?,?,?,?,?,?,?,?,?,?)";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
-			ps.setString(1, store.getStoreName());
-			ps.setString(2, store.getStoreSlug());
-			ps.setString(3, store.getStoreDomain());
-			ps.setString(4, store.getStorePartnerKey());
-			ps.setString(5, store.getStoreDescription());
-			ps.setString(6, store.getStoreHeading());
-			ps.setString(7, store.getPriority());
-			ps.setString(8, store.getNotice());
-			ps.setDouble(9, store.getMiniumTransactionAmount());
-			ps.setString(10, store.getVary());
-			ps.setString(11, store.getStorePrimaryKeyWord());
-			ps.setString(12, store.getStoreSecondaryKeyWord());
-			status = ps.executeUpdate();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		System.out.println("Status :::" + status);
-		if (status > 0)
-			return true;
-		else
-			return false;
-	}
-
-	@Override
-	public boolean updateStore(Store store, int storeId) {
-		int status = 0;
-		try (Connection con = (Connection) dataSource.getConnection()) {
-			String sql = "update master_store set store_name = ?,store_slug = ?,store_domain = ?,store_partner_key = ?,store_description = ?,store_heading = ?,priority = ?,notice = ?,minium_transaction_amount = ?,vary = ?,store_primary_key_word = ?,store_secondary_key_word=? where master_store_id = ?";
-			PreparedStatement ps = (PreparedStatement) con.prepareStatement(sql);
-			ps.setString(1, store.getStoreName());
-			ps.setString(2, store.getStoreSlug());
-			ps.setString(3, store.getStoreDomain());
-			ps.setString(4, store.getStorePartnerKey());
-			ps.setString(5, store.getStoreDescription());
-			ps.setString(6, store.getStoreHeading());
-			ps.setString(7, store.getPriority());
-			ps.setString(8, store.getNotice());
-			ps.setDouble(9, store.getMiniumTransactionAmount());
-			ps.setString(10, store.getVary());
-			ps.setString(11, store.getStorePrimaryKeyWord());
-			ps.setString(12, store.getStoreSecondaryKeyWord());
-			ps.setInt(13, store.getMasterStoreId());
-			status = ps.executeUpdate();
-			con.close();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		;
-		System.out.println("Status :::" + status);
-		if (status > 0)
-			return true;
-		else
-			return false;
-	}
+	
 
 	/*
 	 * @Transactional

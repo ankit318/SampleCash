@@ -39,7 +39,7 @@
               </a>
               <ul class="treeview-menu"> 
                 <li class="active"><a href="<%=request.getContextPath() %>/store"><i class="fa fa-circle-o"></i> Add Store</a></li>
-                <li><a href="<%=request.getContextPath() %>/storeList"><i class="fa fa-circle-o"></i> Store List</a></li>
+                <li><a href="<%=request.getContextPath() %>/manageStore"><i class="fa fa-circle-o"></i> Store List</a></li>
               </ul> 
             </li>
             <li class="treeview">

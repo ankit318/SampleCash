@@ -67,8 +67,8 @@ public class CategoryImpl implements CategoryDao {
 
 			}
 			con.close();
-			System.out.println("Size:: " + rs.last());
-			System.out.println("Size:: " + rs.getRow());
+			/*System.out.println("Size:: " + rs.last());
+			System.out.println("Size:: " + rs.getRow());*/
 
 		} catch (Exception e) {
 			e.printStackTrace();

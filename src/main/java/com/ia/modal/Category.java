@@ -6,6 +6,9 @@ public class Category
 	private String catName;
 	private String catPath;
 	private String catDesc;
+	private int parentId;
+	
+	
 	public int getCategoryId() {
 		return categoryId;
 	}
@@ -30,6 +33,10 @@ public class Category
 	public void setCatDesc(String catDesc) {
 		this.catDesc = catDesc;
 	}
-	
-	
+	public int getParentId() {
+		return parentId;
+	}
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
+	}
 }
