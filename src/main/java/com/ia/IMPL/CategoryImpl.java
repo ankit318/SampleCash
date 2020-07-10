@@ -27,7 +27,7 @@ public class CategoryImpl implements CategoryDao {
 	Connection con;
 	
 	@Override
-	public boolean categoryInsert(Category category) {
+	public boolean insertCategory(Category category) {
 		// TODO Auto-generated method stub
 		int status = 0;
 		try (Connection con = (Connection) dataSource.getConnection()) {
@@ -35,6 +35,7 @@ public class CategoryImpl implements CategoryDao {
 			ps.setString(1, category.getCatName());
 			ps.setString(2, category.getCatPath());
 			ps.setString(3, category.getCatDesc());
+			ps.setInt(4, category.getParentId());
 			status = ps.executeUpdate();
 			con.close();
 		} catch (Exception e) {
@@ -56,6 +57,72 @@ public class CategoryImpl implements CategoryDao {
 		try (Connection con = (Connection) dataSource.getConnection()) {
 			PreparedStatement ps = (PreparedStatement) con.prepareStatement(categoryProp.getProperty("getCategory"));
 			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Category category = new Category();
+				category.setCategoryId(Integer.parseInt(rs.getString("category_id")));
+				category.setCatName(rs.getString("name"));
+				category.setCatDesc(rs.getString("cat_desc"));
+				category.setCatPath(rs.getString("cat_path"));
+				category.setParentId(rs.getInt("parent_id"));
+				data.add(category);
+			}
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return data;
+	}
+
+	@Override
+	public boolean updateCategoryStatus(int categoryId, int flag) {
+		int status = 0;
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(categoryProp.getProperty("updateCategoryStatus"));
+			ps.setInt(1, flag);
+			ps.setInt(2, categoryId);
+			status = ps.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		 
+		if (status > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean deleteCategory(int categoryId) {
+		int status = 0;
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(categoryProp.getProperty("deleteCategory"));
+			ps.setInt(1, categoryId);
+			status = ps.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		 
+		if (status > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public List<Category> getSubCategory(int parentId) {
+		List<Category> data = new ArrayList<>();
+		try (Connection con = (Connection) dataSource.getConnection()) {
+			PreparedStatement ps = (PreparedStatement) con.prepareStatement(categoryProp.getProperty("getSubCategory"));
+			ps.setInt(1, parentId);
+			ResultSet rs = ps.executeQuery();
+			
 			while (rs.next()) {
 				Category category = new Category();
 				category.setCategoryId(Integer.parseInt(rs.getString("category_id")));

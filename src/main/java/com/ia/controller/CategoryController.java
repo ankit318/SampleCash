@@ -37,7 +37,7 @@ public class CategoryController {
 		
 		System.out.println("Categoty :::"+category.getCatName());
 		
-		categoryDao.categoryInsert(category);
+		categoryDao.insertCategory(category);
 		 
 		return "redirect:category";
 	}
